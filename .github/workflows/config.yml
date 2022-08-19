@@ -67,9 +67,9 @@ jobs:
         id: gen_image_repository
         run: |
           if [[ !${{ inputs.service_name }} ]]; then
-            image_repository="${{ inputs.service_name }}"
+            image_repository="$(echo betkub/betkub-awc | cut  -d '/' -f 2)"
           else
-            image_repository="$(echo ${{ github.repository }} | cut  -d '/' -f 2)"
+            image_repository="${{ inputs.service_name }}"
           fi
           echo "::set-output name=image_repository::$image_repository"
 
