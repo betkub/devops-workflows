@@ -45,11 +45,11 @@ jobs:
     steps:
       - name: Checkout
         id: checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Checkout utils
         if: ${{ inputs.is_submodule }}
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           repository: ${{ inputs.util_repository }}
           token: ${{ secrets.PAT }} # `GitHub_PAT` is a secret
