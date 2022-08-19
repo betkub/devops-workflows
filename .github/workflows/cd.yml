@@ -20,6 +20,10 @@ on:
         description: "Helm path"
         required: true
         type: string
+      argo_repo:
+        description: "Argocd repository."
+        required: true
+        type: string
 jobs:
   deploy:
     name: deploy
@@ -27,7 +31,7 @@ jobs:
     env:
       GIT_EMAIL: action@github.com
       GIT_NAME: ${{ github.actor }}
-      GIT_TARGET_REPO: "${{ github.repository_owner }}/argocd-nonprod"
+      GIT_TARGET_REPO: "${{ github.repository_owner }}/${{ inputs.argo_repo }}"
       GIT_BASE_BRANCH: main
       SERVICE_NAME: ${{ inputs.service_name }}
       IMAGE_TAG: ${{ inputs.image_tag }}
