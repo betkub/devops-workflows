@@ -5,7 +5,6 @@ on:
     inputs:
       service_name:
         description: "Set custome service name"
-        default: ""
         required: false
         type: string
       is_submodule:
@@ -67,7 +66,7 @@ jobs:
       - name: Generate Image Repository
         id: gen_image_repository
         run: |
-          if [[ ${{ inputs.service_name }} == "" ]]; then
+          if [[ !${{ inputs.service_name }} ]]; then
             image_repository="${{ inputs.service_name }}"
           else
             image_repository="$(echo ${{ github.repository }} | cut  -d '/' -f 2)"
