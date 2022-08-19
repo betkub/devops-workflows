@@ -1,0 +1,84 @@
+name: Config workflow
+
+on:
+  workflow_call:
+    inputs:
+      service_name:
+        description: "Set custome service name"
+        default: ""
+        required: false
+        type: string
+      is_submodule:
+        description: "Set submodule"
+        default: false
+        required: false
+        type: boolean
+      util_repository:
+        description: "Util repository"
+        required: true
+        type: string
+      util_path:
+        description: "Path of utils"
+        required: true
+        type: string
+      util_branch:
+        description: "Brnach of utils"
+        required: true
+        type: string
+    outputs:
+      image_tag:
+        description: "Docker image tag."
+        value: ${{ jobs.config.outputs.image_tag }}
+      image_repository:
+        description: "Docker repository"
+        value: ${{ jobs.config.outputs.image_repository }}
+      image_name:
+        description: "Docker image name."
+        value: ${{ jobs.config.outputs.image_name }}
+
+jobs:
+  config:
+    runs-on: ubuntu-latest
+    outputs:
+      image_tag: ${{ steps.generate_config.outputs.image_tag }}
+      image_name: ${{ steps.generate_config.outputs.image_name }}
+      image_repository: ${{ steps.generate_config.outputs.image_repository }}
+    steps:
+      - name: Checkout
+        id: checkout
+        uses: actions/checkout@v2
+
+      - name: Checkout utils
+        if: ${{ inputs.is_submodule }}
+        uses: actions/checkout@v2
+        with:
+          repository: ${{ inputs.util_repository }}
+          token: ${{ secrets.PAT }} # `GitHub_PAT` is a secret
+          path: ${{ inputs.util_path }}
+          ref: ${{ inputs.util_branch }}
+
+      - name: Generate Image Tag
+        id: gen_image_tag
+        run: |
+          branch="$(echo ${{ github.ref }} | cut  -d '/' -f 3- | sed -e 's|/|-|g')"
+          image_tag="${branch}-$(git describe --tag --always)"
+          echo "::set-output name=image_tag::$image_tag"
+
+      - name: Generate Image Repository
+        id: gen_image_repository
+        run: |
+          if [[ ${{ inputs.service_name }} == "" ]]; then
+            image_repository="${{ inputs.service_name }}"
+          else
+            image_repository="$(echo ${{ github.repository }} | cut  -d '/' -f 2)"
+          fi
+          echo "::set-output name=image_repository::$image_repository"
+
+      - name: Generate Config
+        id: generate_config
+        run: |
+          image_repository="${{ steps.generate_config.outputs.image_repository }}"
+          image_tag="${{ steps.generate_config.outputs.image_tag }}"
+          echo "::set-output name=image_tag::$image_tag"
+          echo "::set-output name=image_repository::$image_repository"
+          echo "::set-output name=image_name::$image_repository:$image_tag"
