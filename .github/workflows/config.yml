@@ -66,7 +66,8 @@ jobs:
       - name: Generate Image Repository
         id: gen_image_repository
         run: |
-          if [[ !${{ inputs.service_name }} ]]; then
+          echo ${{ inputs.service_name }}
+          if [ !${{ inputs.service_name }} ]; then
             image_repository="$(echo betkub/betkub-awc | cut  -d '/' -f 2)"
           else
             image_repository="${{ inputs.service_name }}"
