@@ -67,18 +67,18 @@ jobs:
         id: gen_image_repository
         run: |
           echo ${{ inputs.service_name }}
-          if [ !${{ inputs.service_name }} ]; then
-            image_repository="$(echo betkub/betkub-awc | cut  -d '/' -f 2)"
-          else
+          if [ ${{ inputs.service_name }} ]; then
             image_repository="${{ inputs.service_name }}"
+          else
+            image_repository="$(echo betkub/betkub-awc | cut  -d '/' -f 2)"
           fi
           echo "::set-output name=image_repository::$image_repository"
 
       - name: Generate Config
         id: generate_config
         run: |
-          image_repository="${{ steps.generate_config.outputs.image_repository }}"
-          image_tag="${{ steps.generate_config.outputs.image_tag }}"
+          image_repository="${{ steps.gen_image_repository.outputs.image_repository }}"
+          image_tag="${{ steps.gen_image_tag.outputs.image_tag }}"
           echo "::set-output name=image_tag::$image_tag"
           echo "::set-output name=image_repository::$image_repository"
           echo "::set-output name=image_name::$image_repository:$image_tag"
