@@ -7,6 +7,11 @@ on:
         description: "Docker image name."
         required: true
         type: string
+      is_frontend:
+        description: "Is frontend app"
+        default: false
+        required: false
+        type: boolean
     outputs:
       image:
         description: "Docker image."
@@ -28,6 +33,16 @@ jobs:
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Attach ENV To Application
+        if: ${{ inputs.is_frontend }}
+        run: |
+          branch="$(echo ${{ github.ref }} | cut  -d '/' -f 3- | sed -e 's|/|-|g')"
+          if [ $branch == 'main' || $branch == 'master' ]; then
+            echo -n ${{ secrets.DEV_PROD_BASE64 }} | base64 --decode > .env
+          else
+            echo -n ${{ secrets.DEV_ENV_BASE64 }} | base64 --decode > .env
+          fi
 
       - name: Build, tag, and push image to Amazon ECR
         id: build-image
