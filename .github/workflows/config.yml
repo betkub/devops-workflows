@@ -14,15 +14,15 @@ on:
         type: boolean
       util_repository:
         description: "Util repository"
-        required: true
+        required: false
         type: string
       util_path:
         description: "Path of utils"
-        required: true
+        required: false
         type: string
       util_branch:
         description: "Brnach of utils"
-        required: true
+        required: false
         type: string
     outputs:
       image_tag:
