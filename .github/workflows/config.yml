@@ -43,6 +43,9 @@ jobs:
       image_name: ${{ steps.generate_config.outputs.image_name }}
       image_repository: ${{ steps.generate_config.outputs.image_repository }}
     steps:
+      - name: Clean Workspace
+        uses: AutoModality/action-clean@v1.1.0
+
       - name: Checkout
         id: checkout
         uses: actions/checkout@v3
