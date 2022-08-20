@@ -20,6 +20,10 @@ on:
         description: "Helm path"
         required: true
         type: string
+      chart_name:
+        description: "Helm chart name"
+        required: true
+        type: string
       argo_repo:
         description: "Argocd repository."
         required: true
@@ -36,6 +40,7 @@ jobs:
       SERVICE_NAME: ${{ inputs.service_name }}
       IMAGE_TAG: ${{ inputs.image_tag }}
       HELM_PATH: ${{ inputs.helm_path }}
+      CHART_NAME: ${{ inputs.chart_name }}
 
     steps:
       - name: Checkout
@@ -59,7 +64,7 @@ jobs:
       - name: Commit Gitops ArgoCD
         run: |
           cd ${{ env.HELM_PATH }}
-          yq e ".image.tag=\"${{ env.IMAGE_TAG }}\"" -i values.yaml
+          yq e ".${{ env.CHART_NAME }}.image.tag=\"${{ env.IMAGE_TAG }}\"" -i values.yaml
           git add .
           git commit -m "Update ${{ env.SERVICE_NAME }} version ${{ env.IMAGE_TAG }}"
         env:
