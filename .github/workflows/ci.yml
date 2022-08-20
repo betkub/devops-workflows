@@ -39,8 +39,10 @@ jobs:
         run: |
           branch="$(echo ${{ github.ref }} | cut  -d '/' -f 3- | sed -e 's|/|-|g')"
           if [ $branch == 'main' || $branch == 'master' ]; then
+            echo "set env to prod"
             echo -n ${{ secrets.DEV_PROD_BASE64 }} | base64 --decode > .env
           else
+            echo "set env to dev"
             echo -n ${{ secrets.DEV_ENV_BASE64 }} | base64 --decode > .env
           fi
 
