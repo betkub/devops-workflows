@@ -38,7 +38,7 @@ jobs:
         if: ${{ inputs.is_frontend }}
         run: |
           branch="$(echo ${{ github.ref }} | cut  -d '/' -f 3- | sed -e 's|/|-|g')"
-          if [${branch} == "main"]; then
+          if ["${branch}" == "main"]; then
             echo "set env to prod"
             echo -n ${{ secrets.DEV_PROD_BASE64 }} | base64 --decode > .env
           else
