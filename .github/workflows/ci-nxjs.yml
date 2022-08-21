@@ -42,21 +42,9 @@ jobs:
           yarn
 
       - name: Build
-        uses: mansagroup/nrwl-nx-action@v2
-        with:
-          targets: build
-          projects: ${{ inputs.service_name }}
-          affected: false
-          all: false
-
-      - name: Build docker images
-        uses: mansagroup/nrwl-nx-action@v2
-        with:
-          targets: deploy
-          projects: "${{ inputs.service_name }}"
-          affected: false
-          all: false
-          args: --ecr-registry="${{ steps.login-ecr.outputs.registry }}" --tag="${{ inputs.image_tag }}"
+        run: |
+          yarn run build ${{ inputs.service_name }}
+          yarn deploy ${{ inputs.service_name }} --ecr-registry="${{ steps.login-ecr.outputs.registry }}" --tag="${{ inputs.image_tag }}"
 
       - name: Publish docker images
         env:
