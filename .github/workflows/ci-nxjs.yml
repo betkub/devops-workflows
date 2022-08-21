@@ -1,0 +1,64 @@
+name: CI NxJS Workflow
+
+on:
+  workflow_call:
+    inputs:
+      service_name:
+        description: "Path in apps"
+        required: true
+        type: string
+      image_repository:
+        description: "Docker repository."
+        required: true
+        type: string
+      image_tag:
+        description: "Docker image tag."
+        required: true
+        type: string
+    outputs:
+      image:
+        description: "Docker image."
+        value: ${{ jobs.build.outputs.image }}
+
+jobs:
+  build:
+    runs-on: [self-hosted]
+    outputs:
+      image: ${{ steps.build-image.outputs.image }}
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Install node package
+        run: |
+          yarn
+
+      - name: Build
+        uses: mansagroup/nrwl-nx-action@v2
+        with:
+          targets: build
+          projects: ${{ inputs.service_path }}
+
+      - name: Build docker images
+        uses: mansagroup/nrwl-nx-action@v2
+        with:
+          targets: deploy
+          projects: ${{ inputs.service_path }}
+          args: --ecr-registry="${{ steps.login-ecr.outputs.registry }}" --tag="${{ inputs.image_tag }}"
+
+      - name: Publish docker images
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          REPOSITORY: ${{ inputs.image_repository }}
+          IMAGE_TAG: ${{ inputs.image_tag }}
+          SERVICE_NAME: ${{ inputs.service_name }}
+        run: |
+          docker push $ECR_REGISTRY/$REPOSITORY-$SERVICE_NAME:$IMAGE_TAG
