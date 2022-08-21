@@ -64,6 +64,7 @@ jobs:
       - name: Commit Gitops ArgoCD
         run: |
           cd ${{ env.HELM_PATH }}
+          git pull
           yq e ".${{ env.CHART_NAME }}.image.tag=\"${{ env.IMAGE_TAG }}\"" -i values.yaml
           git add .
           git commit -m "Update ${{ env.SERVICE_NAME }} version ${{ env.IMAGE_TAG }}"
@@ -73,7 +74,6 @@ jobs:
       - name: Deploy nonprod
         if: ${{ !inputs.is_production }}
         run: |
-          git pull
           git push origin $GIT_BASE_BRANCH
         env:
           GITHUB_TOKEN: ${{ secrets.PAT }}
