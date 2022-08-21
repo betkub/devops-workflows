@@ -45,14 +45,15 @@ jobs:
         uses: mansagroup/nrwl-nx-action@v2
         with:
           targets: build
-          projects: ${{ inputs.service_path }}
+          projects: ${{ inputs.service_name }}
           affected: false
 
       - name: Build docker images
         uses: mansagroup/nrwl-nx-action@v2
         with:
           targets: deploy
-          projects: ${{ inputs.service_path }}
+          projects: ${{ inputs.service_name }}
+          affected: false
           args: --ecr-registry="${{ steps.login-ecr.outputs.registry }}" --tag="${{ inputs.image_tag }}"
 
       - name: Publish docker images
