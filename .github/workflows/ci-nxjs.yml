@@ -46,6 +46,7 @@ jobs:
         with:
           targets: build
           projects: ${{ inputs.service_path }}
+          affected: false
 
       - name: Build docker images
         uses: mansagroup/nrwl-nx-action@v2
