@@ -73,6 +73,7 @@ jobs:
       - name: Deploy nonprod
         if: ${{ !inputs.is_production }}
         run: |
+          git pull origin $GIT_BASE_BRANCH
           git push origin $GIT_BASE_BRANCH
         env:
           GITHUB_TOKEN: ${{ secrets.PAT }}
