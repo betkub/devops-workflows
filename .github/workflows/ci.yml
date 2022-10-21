@@ -38,9 +38,14 @@ jobs:
         if: ${{ inputs.is_frontend }}
         run: |
           branch="$(echo ${{ github.ref }} | cut  -d '/' -f 3- | sed -e 's|/|-|g')"
-          if [${branch} == "main"]; then
+          if [ "${branch}" == "main" ]; then
+            echo "branch: main"
             echo "set env to prod"
-            echo -n ${{ secrets.DEV_PROD_BASE64 }} | base64 --decode > .env
+            echo -n ${{ secrets.PROD_ENV_BASE64 }} | base64 --decode > .env
+          elif [ "${branch}" == "master" ]; then
+            echo "branch: master"
+            echo "set env to prod"
+            echo -n ${{ secrets.PROD_ENV_BASE64 }} | base64 --decode > .env
           else
             echo "set env to dev"
             echo -n ${{ secrets.DEV_ENV_BASE64 }} | base64 --decode > .env
@@ -54,4 +59,4 @@ jobs:
         run: |
           docker build -t $ECR_REGISTRY/$IMAGE .
           docker push $ECR_REGISTRY/$IMAGE
-          echo "::set-output name=image::$ECR_REGISTRY/$IMAGE"
+          echo "image=$ECR_REGISTRY/$IMAGE" >> $GITHUB_OUTPUT
