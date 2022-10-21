@@ -64,7 +64,7 @@ jobs:
         run: |
           branch="$(echo ${{ github.ref }} | cut  -d '/' -f 3- | sed -e 's|/|-|g')"
           image_tag="${branch}-$(git describe --tag --always)"
-          echo "::set-output name=image_tag::$image_tag"
+          echo "image_tag=$image_tag" >> $GITHUB_OUTPUT
 
       - name: Generate Image Repository
         id: gen_image_repository
@@ -75,13 +75,13 @@ jobs:
           else
             image_repository="$(echo ${{ github.repository }} | cut  -d '/' -f 2)"
           fi
-          echo "::set-output name=image_repository::$image_repository"
+          echo "image_repository=$image_repository" >> $GITHUB_OUTPUT
 
       - name: Generate Config
         id: generate_config
         run: |
           image_repository="${{ steps.gen_image_repository.outputs.image_repository }}"
           image_tag="${{ steps.gen_image_tag.outputs.image_tag }}"
-          echo "::set-output name=image_tag::$image_tag"
-          echo "::set-output name=image_repository::$image_repository"
-          echo "::set-output name=image_name::$image_repository:$image_tag"
+          echo "image_tag=$image_tag" >> $GITHUB_OUTPUT
+          echo "image_repository=$image_repository" >> $GITHUB_OUTPUT
+          echo "image_name=$image_repository:$image_tag" >> $GITHUB_OUTPUT
