@@ -59,4 +59,4 @@ jobs:
         run: |
           docker build -t $ECR_REGISTRY/$IMAGE .
           docker push $ECR_REGISTRY/$IMAGE
-          echo "::set-output name=image::$ECR_REGISTRY/$IMAGE"
+          echo "image=$ECR_REGISTRY/$IMAGE" >> $GITHUB_OUTPUT
