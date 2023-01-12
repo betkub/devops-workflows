@@ -28,6 +28,11 @@ on:
         description: "Argocd repository."
         required: true
         type: string
+      use_helm_dependency:
+        description: "Deploy with helm dependency"
+        default: false
+        required: false
+        type: boolean
 jobs:
   deploy:
     name: deploy
@@ -41,6 +46,7 @@ jobs:
       IMAGE_TAG: ${{ inputs.image_tag }}
       HELM_PATH: ${{ inputs.helm_path }}
       CHART_NAME: ${{ inputs.chart_name }}
+      USE_HELM_DEPENDENCY: ${{ inputs.use_helm_dependency }}
 
     steps:
       - name: Checkout
