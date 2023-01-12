@@ -28,6 +28,11 @@ on:
         description: "Argocd repository."
         required: true
         type: string
+      use_helm_dependency:
+        description: "Deploy with helm dependency"
+        default: false
+        required: false
+        type: boolean
 jobs:
   deploy:
     name: deploy
@@ -41,6 +46,7 @@ jobs:
       IMAGE_TAG: ${{ inputs.image_tag }}
       HELM_PATH: ${{ inputs.helm_path }}
       CHART_NAME: ${{ inputs.chart_name }}
+      USE_HELM_DEPENDENCY: ${{ inputs.use_helm_dependency }}
 
     steps:
       - name: Checkout
@@ -64,7 +70,11 @@ jobs:
       - name: Commit Gitops ArgoCD
         run: |
           cd ${{ env.HELM_PATH }}
-          yq e ".image.tag=\"${{ env.IMAGE_TAG }}\"" -i values.yaml
+          if [[ ${{ env.USE_HELM_DEPENDENCY }} == true ]]; then
+            yq e ".${{ env.CHART_NAME }}.image.tag=\"${{ env.IMAGE_TAG }}\"" -i values.yaml
+          else
+            yq e ".image.tag=\"${{ env.IMAGE_TAG }}\"" -i values.yaml
+          fi
           git pull
           git add .
           git commit -m "Update ${{ env.SERVICE_NAME }} version ${{ env.IMAGE_TAG }}"
