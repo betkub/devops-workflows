@@ -14,15 +14,15 @@ on:
         type: boolean
       util_repository:
         description: "Util repository"
-        required: true
+        required: false
         type: string
       util_path:
         description: "Path of utils"
-        required: true
+        required: false
         type: string
       util_branch:
         description: "Brnach of utils"
-        required: true
+        required: false
         type: string
     outputs:
       image_tag:
@@ -37,7 +37,7 @@ on:
 
 jobs:
   config:
-    runs-on: [ubuntu-latest]
+    runs-on: [self-hosted]
     outputs:
       image_tag: ${{ steps.generate_config.outputs.image_tag }}
       image_name: ${{ steps.generate_config.outputs.image_name }}
