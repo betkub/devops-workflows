@@ -48,7 +48,7 @@ jobs:
             echo -n ${{ secrets.PROD_ENV_BASE64 }} | base64 --decode > .env
           else
             echo "set env to dev"
-            echo -n ${{ secrets.DEV_ENV_BASE64 }} | base64 --decode > .env
+            echo -n "${{ secrets.DEV_ENV_BASE64 }}" | base64 --decode > .env
           fi
 
       - name: Build, tag, and push image to Amazon ECR
