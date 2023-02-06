@@ -41,11 +41,11 @@ jobs:
           if [ "${branch}" == "main" ]; then
             echo "branch: main"
             echo "set env to prod"
-            echo -n ${{ secrets.PROD_ENV_BASE64 }} | base64 --decode > .env
+            echo -n "${{ secrets.PROD_ENV_BASE64 }}" | base64 --decode > .env
           elif [ "${branch}" == "master" ]; then
             echo "branch: master"
             echo "set env to prod"
-            echo -n ${{ secrets.PROD_ENV_BASE64 }} | base64 --decode > .env
+            echo -n "${{ secrets.PROD_ENV_BASE64 }}" | base64 --decode > .env
           else
             echo "set env to dev"
             echo -n "${{ secrets.DEV_ENV_BASE64 }}" | base64 --decode > .env
