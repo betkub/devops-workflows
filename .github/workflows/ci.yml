@@ -19,10 +19,26 @@ on:
 
 jobs:
   build:
-    runs-on: [self-hosted]
+    runs-on: [ubuntu-20.04]
     outputs:
       image: ${{ steps.build-image.outputs.image }}
     steps:
+      - name: Clean Workspace
+        uses: AutoModality/action-clean@v1.1.0
+
+      - name: Checkout
+        id: checkout
+        uses: actions/checkout@v3
+
+      - name: Checkout utils
+        if: ${{ inputs.is_submodule }}
+        uses: actions/checkout@v3
+        with:
+          repository: ${{ inputs.util_repository }}
+          token: ${{ secrets.PAT }} # `GitHub_PAT` is a secret
+          path: ${{ inputs.util_path }}
+          ref: ${{ inputs.util_branch }}
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
