@@ -37,7 +37,7 @@ on:
 
 jobs:
   config:
-    runs-on: [self-hosted]
+    runs-on: [ubuntu-20.04]
     outputs:
       image_tag: ${{ steps.generate_config.outputs.image_tag }}
       image_name: ${{ steps.generate_config.outputs.image_name }}
