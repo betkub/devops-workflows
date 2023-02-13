@@ -12,6 +12,23 @@ on:
         default: false
         required: false
         type: boolean
+      is_submodule:
+        description: "Set submodule"
+        default: false
+        required: false
+        type: boolean
+      util_repository:
+        description: "Util repository"
+        required: false
+        type: string
+      util_path:
+        description: "Path of utils"
+        required: false
+        type: string
+      util_branch:
+        description: "Brnach of utils"
+        required: false
+        type: string
     outputs:
       image:
         description: "Docker image."
